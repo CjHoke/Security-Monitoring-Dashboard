@@ -1,0 +1,967 @@
+
+/* =========================================
+   SENTINEL - SECURITY MONITORING DASHBOARD
+   Professional SOC Interface
+========================================= */
+
+/* =========================================
+   1. DESIGN TOKENS
+========================================= */
+
+:root {
+    --bg-main: #0B1018;
+    --bg-panel: #121C2A;
+    --bg-panel-hover: #192638;
+    --bg-input: #0D1622;
+
+    --accent-primary: #38BDF8;
+    --accent-primary-hover: #7DD3FC;
+
+    --text-primary: #F1F5F9;
+    --text-secondary: #CBD5E1;
+    --text-muted: #94A3B8;
+
+    --border-color: #334155;
+    --border-subtle: #253449;
+
+    --status-success: #34D399;
+    --status-warning: #FBBF24;
+    --status-danger: #F87171;
+
+    --success-bg: rgba(52, 211, 153, 0.12);
+    --warning-bg: rgba(251, 191, 36, 0.12);
+    --danger-bg: rgba(248, 113, 113, 0.12);
+
+    --shadow-panel: 0 12px 30px rgba(0, 0, 0, 0.25);
+
+    --radius-small: 6px;
+    --radius-medium: 10px;
+    --radius-large: 14px;
+
+    --transition: 0.2s ease;
+}
+
+
+/* =========================================
+   2. GLOBAL SETTINGS
+========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    background:
+        radial-gradient(
+            ellipse at 50% 0%,
+            rgba(30, 64, 96, 0.16),
+            transparent 55%
+        ),
+        var(--bg-main);
+
+    color: var(--text-primary);
+
+    font-family:
+        Inter,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+button,
+select {
+    cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 3px;
+}
+
+::selection {
+    background: rgba(56, 189, 248, 0.3);
+    color: #FFFFFF;
+}
+
+
+/* =========================================
+   3. APPLICATION HEADER
+========================================= */
+
+.topbar {
+    width: 100%;
+    min-height: 82px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 15px 6%;
+
+    background: rgba(15, 23, 34, 0.92);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.brand-icon {
+    width: 43px;
+    height: 43px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    border-radius: 10px;
+
+    color: var(--accent-primary);
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.brand-text h1 {
+    color: var(--text-primary);
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    line-height: 1.2;
+}
+
+.brand-text span {
+    display: block;
+
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    margin-top: 4px;
+}
+
+.system-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+}
+
+.status-indicator {
+    width: 9px;
+    height: 9px;
+
+    background: var(--status-success);
+    border-radius: 50%;
+
+    box-shadow: 0 0 9px rgba(52, 211, 153, 0.4);
+}
+
+
+/* =========================================
+   4. MAIN DASHBOARD CONTAINER
+========================================= */
+
+.dashboard-container {
+    width: 100%;
+    max-width: 1550px;
+
+    margin: 0 auto;
+    padding: 55px 6% 70px;
+}
+
+
+/* =========================================
+   5. DASHBOARD INTRODUCTION
+========================================= */
+
+.dashboard-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    gap: 25px;
+    margin-bottom: 35px;
+}
+
+.section-label {
+    color: var(--accent-primary);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 9px;
+}
+
+.dashboard-heading h2 {
+    color: var(--text-primary);
+    font-size: clamp(28px, 3vw, 36px);
+    font-weight: 700;
+    letter-spacing: -0.8px;
+    margin-bottom: 9px;
+}
+
+.dashboard-description {
+    max-width: 680px;
+
+    color: var(--text-secondary);
+    font-size: 15px;
+}
+
+.simulation-badge {
+    flex-shrink: 0;
+
+    padding: 8px 13px;
+
+    background: rgba(251, 191, 36, 0.09);
+    border: 1px solid rgba(251, 191, 36, 0.35);
+    border-radius: var(--radius-small);
+
+    color: #FDE68A;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+
+/* =========================================
+   6. SECURITY METRIC CARDS
+========================================= */
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+
+    margin-bottom: 25px;
+}
+
+.metric-card {
+    position: relative;
+    overflow: hidden;
+
+    min-width: 0;
+    min-height: 150px;
+
+    padding: 24px;
+
+    background: linear-gradient(
+        145deg,
+        #172436,
+        #111B29
+    );
+
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-medium);
+
+    box-shadow: var(--shadow-panel);
+
+    transition:
+        background var(--transition),
+        border-color var(--transition),
+        transform var(--transition);
+}
+
+.metric-card:hover {
+    background: var(--bg-panel-hover);
+    border-color: #52677F;
+    transform: translateY(-3px);
+}
+
+.metric-label {
+    display: block;
+
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.1px;
+}
+
+.metric-value {
+    color: var(--text-primary);
+    font-size: 36px;
+    font-weight: 750;
+    line-height: 1.3;
+
+    margin: 10px 0 5px;
+
+    font-variant-numeric: tabular-nums;
+}
+
+.metric-description {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+
+/* =========================================
+   7. DASHBOARD WORKSPACE
+========================================= */
+
+.dashboard-workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1.8fr) minmax(280px, 0.9fr);
+
+    gap: 20px;
+    align-items: start;
+}
+
+.panel {
+    min-width: 0;
+
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-large);
+
+    box-shadow: var(--shadow-panel);
+}
+
+.events-panel,
+.alerts-panel {
+    padding: 24px;
+}
+
+
+/* =========================================
+   8. PANEL HEADERS
+========================================= */
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+.panel-header h3,
+.simulation-panel h3 {
+    color: var(--text-primary);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.panel-header .section-label {
+    margin-bottom: 3px;
+}
+
+.panel-count {
+    flex-shrink: 0;
+
+    color: var(--text-secondary);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+
+    background: #1C2A3D;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+
+    padding: 6px 9px;
+}
+
+
+/* =========================================
+   9. SEARCH AND FILTER CONTROLS
+========================================= */
+
+.event-controls {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(150px, 0.7fr);
+
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+}
+
+.control-group label {
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.control-group input,
+.control-group select {
+    width: 100%;
+    min-width: 0;
+    height: 42px;
+
+    padding: 0 12px;
+
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-small);
+
+    color: var(--text-primary);
+    font-size: 13px;
+
+    transition:
+        border-color var(--transition),
+        background var(--transition);
+}
+
+.control-group input::placeholder {
+    color: #A1ADBC;
+}
+
+.control-group input:hover,
+.control-group select:hover {
+    border-color: #52677F;
+}
+
+.control-group input:focus,
+.control-group select:focus {
+    border-color: var(--accent-primary);
+    background: #111D2B;
+}
+
+
+/* =========================================
+   10. AUTHENTICATION EVENT TABLE
+========================================= */
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-medium);
+}
+
+.events-table {
+    width: 100%;
+    min-width: 650px;
+
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.events-table thead {
+    background: #1A2739;
+}
+
+.events-table th {
+    padding: 14px 12px;
+
+    color: var(--text-secondary);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+
+    white-space: nowrap;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.events-table td {
+    padding: 14px 12px;
+
+    color: var(--text-secondary);
+    font-size: 12px;
+
+    border-bottom: 1px solid var(--border-subtle);
+    white-space: nowrap;
+}
+
+.events-table tbody tr {
+    background: #111B29;
+    transition: background var(--transition);
+}
+
+.events-table tbody tr:nth-child(even) {
+    background: #142031;
+}
+
+.events-table tbody tr:hover {
+    background: #203149;
+}
+
+.events-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.events-table td:first-child {
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.events-table td:nth-child(2) {
+    color: var(--accent-primary-hover);
+    font-family: Consolas, monospace;
+    font-size: 12px;
+}
+
+.events-table td:nth-child(3) {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.empty-table {
+    text-align: center;
+    padding: 35px !important;
+    color: var(--text-secondary) !important;
+}
+
+
+/* =========================================
+   11. EVENT STATUS INDICATORS
+   Used by JavaScript when rendering events
+========================================= */
+
+.event-type,
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 5px 8px;
+
+    border-radius: 4px;
+
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+}
+
+.status-failed {
+    color: #FCA5A5;
+    background: var(--danger-bg);
+    border: 1px solid rgba(248, 113, 113, 0.35);
+}
+
+.status-success {
+    color: #6EE7B7;
+    background: var(--success-bg);
+    border: 1px solid rgba(52, 211, 153, 0.35);
+}
+
+.status-warning {
+    color: #FDE68A;
+    background: var(--warning-bg);
+    border: 1px solid rgba(251, 191, 36, 0.35);
+}
+
+
+/* =========================================
+   12. SECURITY ALERTS PANEL
+========================================= */
+
+.alerts-panel {
+    min-height: 350px;
+}
+
+#alert-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.empty-alert {
+    padding: 25px 14px;
+
+    background: #101A27;
+    border: 1px dashed #526175;
+    border-radius: var(--radius-medium);
+
+    color: var(--text-secondary);
+    font-size: 13px;
+    text-align: center;
+}
+
+.alert-item {
+    padding: 15px;
+
+    background: #192537;
+    border: 1px solid var(--border-color);
+    border-left: 3px solid var(--status-warning);
+    border-radius: var(--radius-small);
+}
+
+.alert-item.alert-critical {
+    border-left-color: var(--status-danger);
+}
+
+.alert-item.alert-warning {
+    border-left-color: var(--status-warning);
+}
+
+.alert-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.alert-title {
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.alert-severity {
+    color: #FDE68A;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+}
+
+.alert-critical .alert-severity {
+    color: #FCA5A5;
+}
+
+.alert-description {
+    color: var(--text-secondary);
+    font-size: 12px;
+    overflow-wrap: anywhere;
+    margin-bottom: 7px;
+}
+
+.alert-metadata {
+    color: var(--text-muted);
+    font-size: 10px;
+}
+
+
+/* =========================================
+   13. SIMULATION CONTROLS
+========================================= */
+
+.simulation-panel {
+    margin-top: 22px;
+    padding: 25px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 25px;
+}
+
+.simulation-panel .section-label {
+    margin-bottom: 4px;
+}
+
+.simulation-description {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-top: 6px;
+    max-width: 550px;
+}
+
+.simulation-controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+
+/* =========================================
+   14. BUTTONS
+========================================= */
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 42px;
+    padding: 10px 17px;
+
+    border-radius: var(--radius-small);
+
+    font-size: 12px;
+    font-weight: 800;
+
+    transition:
+        background var(--transition),
+        border-color var(--transition),
+        color var(--transition),
+        transform var(--transition);
+}
+
+.button:hover {
+    transform: translateY(-2px);
+}
+
+.button-primary {
+    color: #071521;
+    background: #7DD3FC;
+    border: 1px solid #7DD3FC;
+}
+
+.button-primary:hover {
+    background: #BAE6FD;
+    border-color: #BAE6FD;
+}
+
+.button-secondary {
+    color: var(--text-primary);
+    background: #253449;
+    border: 1px solid #52677F;
+}
+
+.button-secondary:hover {
+    background: #344860;
+    border-color: #94A3B8;
+}
+
+.button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+/* =========================================
+   15. APPLICATION FOOTER
+========================================= */
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 15px;
+    padding: 22px 6%;
+
+    background: rgba(15, 23, 34, 0.8);
+    border-top: 1px solid var(--border-subtle);
+
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+}
+
+
+/* =========================================
+   16. TABLET RESPONSIVENESS
+========================================= */
+
+@media (max-width: 1050px) {
+
+    .metrics-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-workspace {
+        grid-template-columns: 1fr;
+    }
+
+    .alerts-panel {
+        min-height: auto;
+    }
+
+}
+
+
+/* =========================================
+   17. MOBILE RESPONSIVENESS
+========================================= */
+
+@media (max-width: 768px) {
+
+    .topbar {
+        padding: 15px 5%;
+    }
+
+    .dashboard-container {
+        padding: 40px 5% 50px;
+    }
+
+    .dashboard-heading {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 18px;
+    }
+
+    .dashboard-heading h2 {
+        font-size: 28px;
+    }
+
+    .dashboard-description {
+        font-size: 14px;
+    }
+
+    .metrics-grid {
+        gap: 12px;
+    }
+
+    .metric-card {
+        min-height: 135px;
+        padding: 17px;
+    }
+
+    .metric-value {
+        font-size: 30px;
+    }
+
+    .events-panel,
+    .alerts-panel {
+        padding: 17px;
+    }
+
+    .simulation-panel {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .simulation-controls {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .footer {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px 5%;
+        line-height: 1.8;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .brand-text h1 {
+        font-size: 17px;
+    }
+
+    .brand-text span {
+        font-size: 8px;
+    }
+
+    .system-status {
+        font-size: 9px;
+        gap: 6px;
+    }
+
+    .metrics-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .metric-card {
+        padding: 14px;
+    }
+
+    .metric-label {
+        font-size: 9px;
+    }
+
+    .metric-value {
+        font-size: 27px;
+    }
+
+    .metric-description {
+        font-size: 10px;
+    }
+
+    .event-controls {
+        grid-template-columns: 1fr;
+    }
+
+    .panel-header h3 {
+        font-size: 16px;
+    }
+
+    .simulation-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .simulation-controls .button {
+        width: 100%;
+    }
+
+}
+
+/* =========================================
+   ALERT ACKNOWLEDGMENT
+========================================= */
+
+.alert-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.acknowledgment-status {
+    color: #FDE68A;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+}
+
+.alert-acknowledged {
+    border-left-color: #64748B;
+    background: #15202D;
+}
+
+.alert-acknowledged .acknowledgment-status {
+    color: #CBD5E1;
+}
+
+.acknowledge-button {
+    padding: 7px 11px;
+
+    background: #24364B;
+    border: 1px solid #52677F;
+    border-radius: 5px;
+
+    color: #F1F5F9;
+    font-size: 10px;
+    font-weight: 700;
+
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.acknowledge-button:hover:not(:disabled) {
+    background: #334B65;
+    border-color: #7DD3FC;
+}
+
+.acknowledge-button:disabled {
+    background: #1E293B;
+    border-color: #475569;
+    color: #CBD5E1;
+    cursor: default;
+}

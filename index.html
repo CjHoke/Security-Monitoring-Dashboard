@@ -1,0 +1,246 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Interactive cybersecurity monitoring dashboard demonstrating authentication event analysis and threat detection.">
+
+    <title>Sentinel | Security Monitoring Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- APPLICATION HEADER -->
+    <header class="topbar">
+
+        <div class="brand">
+            <div class="brand-icon">S</div>
+
+            <div class="brand-text">
+                <h1>SENTINEL</h1>
+                <span>SECURITY MONITORING</span>
+            </div>
+        </div>
+
+        <div class="system-status">
+            <span class="status-indicator"></span>
+            <span id="system-status">SYSTEM INITIALIZING</span>
+        </div>
+
+    </header>
+
+
+    <!-- MAIN APPLICATION -->
+    <main class="dashboard-container">
+
+        <!-- PAGE INTRODUCTION -->
+        <section class="dashboard-heading">
+
+            <div>
+                <p class="section-label">SECURITY OPERATIONS CENTER</p>
+                <h2>Security Overview</h2>
+                <p class="dashboard-description">
+                    Monitor authentication activity, identify suspicious behavior,
+                    and analyze potential security threats.
+                </p>
+            </div>
+
+            <div class="simulation-badge" id="environment-badge">
+                SIMULATED ENVIRONMENT
+            </div>
+
+        </section>
+
+
+        <!-- SECURITY METRICS -->
+        <section class="metrics-grid" aria-label="Security metrics">
+
+            <article class="metric-card">
+                <span class="metric-label">TOTAL EVENTS</span>
+                <p class="metric-value" id="metric-total-events">0</p>
+                <span class="metric-description">Processed authentication events</span>
+            </article>
+
+            <article class="metric-card">
+                <span class="metric-label">FAILED LOGINS</span>
+                <p class="metric-value" id="metric-failed-logins">0</p>
+                <span class="metric-description">Failed authentication attempts</span>
+            </article>
+
+            <article class="metric-card">
+                <span class="metric-label">SUCCESSFUL LOGINS</span>
+                <p class="metric-value" id="metric-successful-logins">0</p>
+                <span class="metric-description">Successful authentications</span>
+            </article>
+
+            <article class="metric-card">
+                <span class="metric-label">SUSPICIOUS IPS</span>
+                <p class="metric-value" id="metric-suspicious-ips">0</p>
+                <span class="metric-description">Unique flagged addresses</span>
+            </article>
+
+        </section>
+
+
+        <!-- MAIN DASHBOARD WORKSPACE -->
+        <section class="dashboard-workspace">
+
+            <!-- AUTHENTICATION EVENT FEED -->
+            <section class="panel events-panel">
+
+                <div class="panel-header">
+                    <div>
+                        <p class="section-label">ACTIVITY MONITOR</p>
+                        <h3>Authentication Events</h3>
+                    </div>
+
+                    <span id="events-count" class="panel-count">
+                        0 EVENTS
+                    </span>
+                </div>
+
+
+                <!-- EVENT FILTERS -->
+                <div class="event-controls">
+
+                    <div class="control-group">
+                        <label for="event-search">Search</label>
+
+                        <input
+                            type="search"
+                            id="event-search"
+                            placeholder="Search IP or username..."
+                        >
+                    </div>
+
+                    <div class="control-group">
+                        <label for="event-type-filter">Event Type</label>
+
+                        <select id="event-type-filter">
+                            <option value="ALL">All Events</option>
+                            <option value="FAILED_LOGIN">Failed Logins</option>
+                            <option value="SUCCESS_LOGIN">Successful Logins</option>
+                        </select>
+                    </div>
+
+                </div>
+
+
+                <!-- EVENT TABLE -->
+                <div class="table-container">
+
+                    <table class="events-table">
+
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Source IP</th>
+                                <th>Username</th>
+                                <th>Event Type</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="event-table-body">
+
+                            <tr>
+                                <td colspan="5" class="empty-table">
+                                    Waiting for authentication events...
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- SECURITY ALERTS -->
+            <aside class="panel alerts-panel">
+
+                <div class="panel-header">
+                    <div>
+                        <p class="section-label">THREAT DETECTION</p>
+                        <h3>Security Alerts</h3>
+                    </div>
+
+                    <span id="alerts-count" class="panel-count">
+                        0 ALERTS
+                    </span>
+                </div>
+
+
+                <div id="alert-list" aria-live="polite">
+
+                    <div class="empty-alert">
+                        No security alerts detected.
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </section>
+
+
+        <!-- SIMULATION CONTROLS -->
+        <section class="panel simulation-panel">
+
+            <div>
+                <p class="section-label">ENVIRONMENT CONTROLS</p>
+                <h3>Event Simulation</h3>
+
+                <p class="simulation-description">
+                    Generate simulated authentication activity to test
+                    security monitoring and threat detection.
+                </p>
+            </div>
+
+            <div class="simulation-controls">
+
+                <button
+                    type="button"
+                    id="simulation-toggle"
+                    class="button button-secondary"
+                >
+                    Pause Simulation
+                </button>
+
+                <button
+                    type="button"
+                    id="generate-attack"
+                    class="button button-primary"
+                >
+                    Simulate Brute-Force Attack
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- APPLICATION FOOTER -->
+    <footer class="footer">
+
+        <span> SENTINEL SECURITY MONITORING DASHBOARD </span>
+
+        <span id="footer-data-note">DEVELOPMENT DEMONSTRATION | SIMULATED DATA ONLY</span>
+
+    </footer>
+
+
+    <!-- JAVASCRIPT APPLICATION ENTRY POINT -->
+    <script type="module" src="js/app.js"></script>
+
+</body>
+</html>

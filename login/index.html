@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Sentinel secure portal. Authentication activity on this page is monitored.">
+
+    <title>Sentinel Portal | Sign In</title>
+
+    <link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+
+    <main class="portal">
+
+        <header class="portal-brand">
+            <div class="brand-icon" aria-hidden="true">S</div>
+
+            <div>
+                <h1>SENTINEL PORTAL</h1>
+                <p>SECURE ACCESS</p>
+            </div>
+        </header>
+
+
+        <section class="portal-card" aria-labelledby="portal-heading">
+
+            <h2 id="portal-heading">Account Access</h2>
+
+            <div class="tabs" role="tablist" aria-label="Account actions">
+
+                <button
+                    type="button"
+                    role="tab"
+                    id="tab-login"
+                    class="tab"
+                    aria-selected="true"
+                    aria-controls="login-form"
+                >
+                    Sign In
+                </button>
+
+                <button
+                    type="button"
+                    role="tab"
+                    id="tab-register"
+                    class="tab"
+                    aria-selected="false"
+                    aria-controls="register-form"
+                    tabindex="-1"
+                >
+                    Create Account
+                </button>
+
+            </div>
+
+
+            <p id="form-message" class="message" role="status" aria-live="polite"></p>
+
+
+            <!-- SIGN IN -->
+            <form
+                id="login-form"
+                role="tabpanel"
+                aria-labelledby="tab-login"
+                novalidate
+            >
+
+                <div class="field">
+                    <label for="login-username">Username</label>
+                    <input
+                        type="text"
+                        id="login-username"
+                        name="username"
+                        autocomplete="username"
+                        maxlength="64"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="login-password">Password</label>
+                    <input
+                        type="password"
+                        id="login-password"
+                        name="password"
+                        autocomplete="current-password"
+                        maxlength="128"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="submit-button">Sign In</button>
+
+            </form>
+
+
+            <!-- CREATE ACCOUNT -->
+            <form
+                id="register-form"
+                role="tabpanel"
+                aria-labelledby="tab-register"
+                novalidate
+                hidden
+            >
+
+                <div class="field">
+                    <label for="register-username">Username</label>
+                    <input
+                        type="text"
+                        id="register-username"
+                        name="username"
+                        autocomplete="username"
+                        maxlength="32"
+                        aria-describedby="username-hint"
+                        required
+                    >
+                    <span id="username-hint" class="hint">
+                        3-32 characters: letters, numbers, dots, underscores, hyphens.
+                    </span>
+                </div>
+
+                <div class="field">
+                    <label for="register-password">Password</label>
+                    <input
+                        type="password"
+                        id="register-password"
+                        name="password"
+                        autocomplete="new-password"
+                        maxlength="128"
+                        aria-describedby="password-hint"
+                        required
+                    >
+                    <span id="password-hint" class="hint">
+                        8-128 characters.
+                    </span>
+                </div>
+
+                <div class="field">
+                    <label for="register-confirm">Confirm Password</label>
+                    <input
+                        type="password"
+                        id="register-confirm"
+                        name="confirm"
+                        autocomplete="new-password"
+                        maxlength="128"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="submit-button">Create Account</button>
+
+            </form>
+
+        </section>
+
+
+        <p class="portal-notice">
+            Authentication attempts on this page are recorded and
+            monitored by Sentinel.
+            <a href="/">Open dashboard</a>
+        </p>
+
+    </main>
+
+    <script type="module" src="login.js"></script>
+
+</body>
+</html>

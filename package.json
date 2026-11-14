@@ -1,0 +1,11 @@
+{
+    "name": "sentinel-security-monitoring-dashboard",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "description": "Interactive cybersecurity monitoring dashboard with authentication event analysis and brute-force detection.",
+    "scripts": {
+        "start": "node server/start.js",
+        "test": "node --test"
+    }
+}
