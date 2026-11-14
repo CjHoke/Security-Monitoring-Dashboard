@@ -1,153 +1,228 @@
+# Sentinel — Security Monitoring Dashboard
 
-# Java Security Log Analyzer
+A locally hosted security monitoring and threat detection dashboard built with JavaScript, Node.js, HTML, and CSS.
 
-A command-line security log analysis application built with Java 25 and Maven. The application parses structured security logs, identifies suspicious login activity, detects potential brute-force and password-spraying behavior, and generates timestamped security reports.
+Sentinel provides a centralized interface for monitoring authentication activity, identifying suspicious login behavior, detecting potential brute-force attacks, and reviewing security events in real time.
+
+The application includes a user authentication system, allowing users to create accounts, log in, and access the monitoring dashboard through a locally hosted server.
+
+---
 
 ## Features
 
-- **Log Parsing:** Reads structured security log files and extracts timestamps, IP addresses, event types, usernames, and descriptions.
-- **Malformed Log Detection:** Identifies invalid log entries while continuing to process valid entries.
-- **Failed Login Analysis:** Counts failed login attempts by source IP address.
-- **Suspicious IP Detection:** Flags IP addresses that exceed a configurable failed-login threshold.
-- **Brute-Force Detection:** Identifies repeated failed login attempts within a configurable time window.
-- **Successful Login Correlation:** Detects successful logins following repeated failed attempts.
-- **Password-Spraying Detection:** Identifies source IP addresses attempting authentication against multiple usernames within a time window.
-- **Automated Reporting:** Generates timestamped text reports containing analysis findings and parsing results.
-- **Command-Line Interface:** Supports configurable detection thresholds and built-in usage instructions.
+### Security Monitoring
+- Real-time authentication event monitoring.
+- Live security event feed.
+- Successful and failed login tracking.
+- Authentication statistics and activity summaries.
+- Suspicious IP address identification.
+- Brute-force login attempt detection.
+- Configurable detection thresholds.
+- Security alerts with acknowledgment controls.
+- Search and filtering of authentication events.
 
-## Technologies
+### User Authentication
+- Dedicated login interface.
+- User account creation.
+- Password-based authentication.
+- Server-side authentication and validation.
+- Account and user data persistence.
+- Login activity logging.
+- Account lockout functionality.
 
-- Java 25
-- Maven
-- JUnit 5
-- IntelliJ IDEA
+### Windows Security Event Integration
+- PowerShell utility for exporting Windows Security Event Logs.
+- Support for Windows Event IDs:
+  - `4624` — Successful logon.
+  - `4625` — Failed logon.
+- Normalization of Windows authentication events for analysis.
+
+### Security Analysis
+- Detection of repeated failed authentication attempts.
+- Five-minute sliding-window brute-force detection.
+- IP-specific event analysis.
+- Malformed event handling.
+- Automated security alert generation.
+
+---
+
+## Technology Stack
+
+| Technology | Purpose |
+|---|---|
+| HTML5 | Application structure |
+| CSS3 | Dashboard and login interface |
+| JavaScript | Frontend functionality and analysis |
+| Node.js | Backend server |
+| npm | Package and script management |
+| PowerShell | Windows Security Event collection |
+| JSON | Event and user data storage |
+| Node.js Test Runner | Automated testing |
+
+---
 
 ## Project Structure
 
 ```text
-Java-Security-Log-Analyzer/
-├── logs/
-│   ├── sample-security.log
-│   └── password-spraying-test.log
-├── reports/
-├── src/
-│   ├── main/java/com/calebhoke/securityanalyzer/
-│   │   ├── analyzer/
-│   │   ├── model/
-│   │   ├── parser/
-│   │   ├── report/
-│   │   └── Main.java
-│   └── test/java/com/calebhoke/securityanalyzer/
-│       ├── analyzer/
-│       ├── parser/
-│       └── report/
-├── pom.xml
-└── README.md
+Security-Monitoring-Dashboard/
+│
+├── index.html
+├── style.css
+├── package.json
+├── README.md
+│
+├── login/
+│   ├── index.html
+│   ├── login.css
+│   └── login.js
+│
+├── js/
+│   ├── analyzer.js
+│   ├── app.js
+│   ├── dashboard.js
+│   ├── events.js
+│   └── liveFeed.js
+│
+├── server/
+│   ├── eventLog.js
+│   ├── lockout.js
+│   ├── passwords.js
+│   ├── server.js
+│   ├── start.js
+│   ├── userStore.js
+│   └── validation.js
+│
+├── tests/
+│   ├── analyzer.test.js
+│   └── login-server.test.js
+│
+├── tools/
+│   └── export-windows-security-events.ps1
+│
+└── data/
+    └── sample-logs.json
+    └── login-events.json
+    └── users.jsoon
 ```
 
-## Requirements
+---
 
-- Java 25 or later
-- Maven
+## Installation and Setup
 
-## Building the Application
+### Requirements
 
-Clone the repository and navigate to the project directory.
+- [Node.js](https://nodejs.org/)
+- npm (included with Node.js)
+- Windows (required for the Windows Security Event export utility)
 
-Build the application using Maven:
+### 1. Clone the Repository
 
 ```bash
-mvn clean package
+git clone https://github.com/CjHoke/Security-Monitoring-Dashboard.git
 ```
 
-The executable JAR will be generated at:
-
-```text
-target/security-log-analyzer.jar
-```
-
-## Running the Application
-
-Display usage instructions:
+### 2. Navigate to the Project
 
 ```bash
-java -jar target/security-log-analyzer.jar --help
+cd Security-Monitoring-Dashboard
 ```
 
-Run the analyzer with the sample log:
+### 3. Install Dependencies
 
 ```bash
-java -jar target/security-log-analyzer.jar logs/sample-security.log
+npm install
 ```
 
-Run with custom detection thresholds:
+### 4. View Available npm Scripts
 
 ```bash
-java -jar target/security-log-analyzer.jar logs/sample-security.log 3 5 3
+npm run
 ```
 
-### Command-Line Arguments
+### 5. Start Sentinel
 
-| Argument | Description | Default |
-|---|---|---|
-| log-file | Path to the security log file | logs/sample-security.log |
-| failed-login-threshold | Minimum failures to flag a suspicious IP | 3 |
-| detection-window-minutes | Time window used for attack detection | 5 |
-| brute-force-threshold | Minimum failures for brute-force detection | 3 |
-
-Password-spraying detection currently uses a minimum of 3 unique usernames.
-
-## Log File Format
-
-The analyzer expects pipe-delimited log entries:
-
-```text
-timestamp|ip-address|event-type|username|description
+```bash
+npm start
 ```
 
-Example:
+Once the server starts, open the local address displayed in your terminal using your web browser.
 
-```text
-2026-11-13T10:00:00|192.168.1.100|FAILED_LOGIN|admin|Invalid password
-2026-11-13T10:01:00|192.168.1.100|FAILED_LOGIN|admin|Invalid password
-2026-11-13T10:02:00|192.168.1.100|SUCCESSFUL_LOGIN|admin|Login successful
-```
+Create an account through the login interface or log in with an existing account to access the monitoring dashboard.
 
-## Reports
-
-After analysis, the application generates a timestamped report in the `reports/` directory.
-
-Reports include:
-
-- Parsing results and malformed entries
-- Failed login summaries
-- Suspicious IP addresses
-- Brute-force detection findings
-- Successful logins following repeated failures
-- Potential password-spraying activity
+---
 
 ## Testing
 
-The project includes JUnit 5 unit tests covering:
-
-- Log parsing
-- Malformed log handling
-- Security analysis
-- Detection thresholds and time windows
-- Report generation
+Sentinel includes automated tests using the built-in Node.js test runner.
 
 Run the test suite with:
 
 ```bash
-mvn test
+npm test
 ```
 
-## Detection Limitations
+The tests cover security analysis functionality, authentication event processing, detection thresholds, and server-side login behavior.
 
-This application identifies patterns that may indicate suspicious authentication activity. Its findings are indicators for further investigation, not definitive proof of an attack.
+---
 
-Password-spraying detection is based on failed authentication attempts against multiple unique usernames from a single IP address within a configured time window. The current log format does not record attempted passwords, so the analyzer cannot verify whether the same password was used across accounts.
+## Windows Security Event Collection
+
+Sentinel includes a PowerShell utility for collecting Windows authentication events.
+
+Run PowerShell from the project directory:
+
+```powershell
+.\tools\export-windows-security-events.ps1
+```
+
+The script collects Windows Security Event IDs `4624` and `4625` and exports normalized event data for analysis.
+
+Additional collection parameters can be supplied:
+
+```powershell
+.\tools\export-windows-security-events.ps1 -HoursBack 72 -MaxEvents 5000
+```
+
+Administrator privileges may be required to access the Windows Security event log.
+
+---
+
+## Security Considerations
+
+Sentinel is designed as a locally hosted security monitoring project.
+
+- Do not expose the development server directly to the public internet.
+- Keep user databases, authentication logs, and real security event exports out of public repositories.
+- Never commit passwords, secrets, or environment files.
+- Use appropriate access controls when running the application.
+- Treat collected security logs as potentially sensitive information.
+
+Real Windows Security Event Logs and local authentication data are excluded from version control through `.gitignore`.
+
+---
+
+## Project Goals
+
+Sentinel was developed to explore practical cybersecurity concepts and demonstrate how software engineering can be applied to security monitoring.
+
+The project focuses on:
+
+- Authentication monitoring.
+- Security event analysis.
+- Brute-force attack detection.
+- IP-based threat identification.
+- Backend authentication and account management.
+- Real-time monitoring interfaces.
+- Windows security event collection.
+- Automated testing and validation.
+
+---
 
 ## Author
 
-Caleb Hoke
+**Caleb Hoke**
+
+GitHub: [@CjHoke](https://github.com/CjHoke)
+
+Portfolio: [Personal Portfolio](https://cjhoke.github.io/personal-portfolio/)
+
